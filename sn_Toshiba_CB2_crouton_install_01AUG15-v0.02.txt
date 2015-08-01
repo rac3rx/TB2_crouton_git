@@ -1,0 +1,171 @@
+Toshiba Chromebook 2 Setup Notes
+toshiba 13" chromebook 2 / crouton
+  Toshiba CB35-B3340 13.3 Inch Chromebook (Intel Celeron, 4GB, 16GB SSD, Silver) Full HD-Screen
+      Intel Bay-Trail laptop
+
+  Toshiba CB35-B3340 Chromebook 2 SPECs
+      model#         : PLM02U-009008
+      wt             : 2.95 lbs
+      cpu:           : IntelÂ® CeleronÂ® Processor N2840 (2.16 GHz Intel Celeron) fanless
+      os ........... : Chrome OSâ¢
+      memory         : 4GB DDR3L SDRAM 1600MHz (Memory is not user upgradeable, factory installed only)
+      video ........ : IntelÂ® HD Integrated Graphics 1920x1080 pixels resolution
+      storage        : 16GB solid state flash memory (eMMC)
+                       SD card expandable
+      wireless nic . : IntelÂ® Dual Band Wireless-AC 7260 Plus Bluetooth 802.11ac
+      bluetooth      : BluetoothÂ® V4.0
+      touch pad .... : Touch pad pointing device with multi touch control
+      keyboard       : Chrome Keyboard (black)
+      battery ...... : Lithium Polymer (44Wh, 3-Cell)â*Not user replaceable (Average Battery Life 9 hours)
+      ports usb            : 1 usb 2.0 port
+            usb .... : 1 usb 3.0 port
+            HDMI
+            headphone/mic
+      camera         :
+      dislay         : 13.3 " IPS screen 1920x1080 pixels resolution
+      Dimensions ....: L x W x H 12.60 x 8.40 x 0.76 inches
+      speakers       : skullcandy
+      username ......: chronos
+Prerequisites:
+    01:  Backup - recovery image
+             chrome://imageburner
+             https://support.google.com/chromebook/answer/1080595?hl=en
+             a. install the app / have a SD card
+                https://chrome.google.com/webstore/detail/chromebook-recovery-utili/jndclpdbaamdhonoechobihbbiimdgai
+    02:  Developer Mode - You need a device running Chromium OS that has been switched to developer mode.
+             a.  For instructions on how to do that, go to this Chromium OS wiki page,
+                 click on your device model and follow the steps in the Entering Developer Mode section.
+                 http://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices
+             b.  http://www.meetchrome.com/enable-chromebook-developer-mode/
+
+                 1. ESC + F3 (refresh key) + POWER button
+                 2. CTRL + D  (Chrome OS is missing or damaged)
+                 3. To turn OS Verification OFF, press ENTER.
+                 4. Ctrl+Alt+T root shell new terminal
+    03:  Install the crouton extension into Chromium OS:
+            a.  https://goo.gl/OVQOEt
+            b.  Add the extension or xiwi version to your chroot.
+                sudo sh -e ~/Downloads/crouton -r trusty -t core,audio,xorg,x11,gtk-extra,extension,chrome,xfce,keyboard -e -p /media/removable/SD
+                sudo sh -e ~/Downloads/crouton -r trusty -t core,audio,xorg,x11,gtk-extra,chrome,xfce,keyboard,xiwi -e -p /media/removable/SD
+    NB: Chromebrew - Can be installed for extra functionality that doesn't require crouton
+        http://skycocker.github.io/chromebrew/
+        https://github.com/skycocker/chromebrew 
+            a.  wget -q -O - https://raw.github.com/skycocker/chromebrew/master/install.sh | bash
+            b.  crew search vim
+            c.  crew install vim
+The easy way (assuming you want an Ubuntu LTS with Xfce)
+  Step 01:  Download crouton: https://goo.gl/fd3zc
+  Step 02:  a. Open a shell (Ctrl+Alt+T, type shell and hit enter)
+            b. sudo sh ~/Downloads/crouton -t xfce
+               NB:  
+                    sh ~/Downloads/crouton -e (parameter to create an encrypted chroot or encrypt a non-encrypted chroot)
+                    sh ~/Downloads/crouton -r (list to list the recognized releases and which distros they belong to)
+            c. sh ~/Downloads/crouton -t core
+            d. sh ~/Downloads/crouton -t cli-extra
+            e. To install Ubuntu 12.04 (Precise) with Unity (2D) and enable encryption, use the following command:
+               sudo sh -e ~/Downloads/crouton -r precise -t unity -e
+            f. sudo sh -e ~/Downloads/crouton -r trusty -t core,audio,xorg,x11,gtk-extra,extension,chrome,xfce,keyboard,xiwi -e -p /media/removable/SD
+            g. sudo sh -e ~/Downloads/crouton -r trusty -t lxde -e
+            h. sudo sh ~/Downloads/crouton -t xfce
+            i. Install crouton with Ubuntu Trusty + Unity, keyboard, sound and touch support: 
+               sudo sh ~/Downloads/crouton -t unity,keyboard,audio,touch -r trusty
+            j. sudo sh ~/Downloads/crouton -t keyboard,extension,unity -r trusty -n unitytrusty
+               sudo sh ~/Downloads/crouton -t keyboard,extension,gnome -r trusty -n gnometrusty
+               sudo sh ~/Downloads/crouton -t keyboard,xiwi,e17 -r trusty -n enlightenment
+  Step 03:  a. Answer the prompts like a good person.
+            b. Start Xfce session by running:
+               sudo enter-chroot startxfce4
+               sudo startxfce4
+               sudo startunity
+               sudo startgnome
+               sudo starte17
+               sudo startlxde
+  Step 04:  Cycle through Chromium OS and your running graphical chroots using:
+               Ctrl+Alt+Shift+Back and Ctrl+Alt+Shift+Forward.
+  Step 05:  Exit the chroot by logging out of Xfce
+Post Install Tips:
+  01:  Check for updates:
+           a. download the latest version, and see what's new by running from chroot:
+                  croutonversion -u -d -c (run croutonversion -h to see what those parameters actually do).
+           b. Exit the chroot and run:
+                  sudo sh ~/Downloads/crouton -u -n chrootname (It will update all installed targets).
+  02:  Backup chroot
+           a.  backs up your chroot to a timestamped tarball in the current directory
+                   sudo edit-chroot -b chrootname
+           b. named either via the -n parameter when created or by the release name if -n was not specified.
+                   sudo edit-chroot -n chrootname
+                   sudo edit-chroot chrootname
+           c. restores the chroot from the most recent timestamped tarball. You can explicitly specify the tarball with -f
+                  sudo edit-chroot -r chrootname
+                  sudo sh ~/Downloads/crouton -f mybackup.tar.gz
+  03:  name/location/password/existence
+           a. Chromium OS root password:
+                  sudo chromeos-setdevpasswd
+           b. chroot passwd
+                  passwd
+  04.  The delete-chroot command is your sword, shield, and only true friend. sudo delete-chroot evilchroot
+           a.  sudo delete-chroot evilchroot  (shortcut to sudo edit-chroot -d evilchroot)
+  05.  change the distro mirror from the default by using -m
+           a.  sudo sh ~/Downloads/crouton -m
+  06.  share files and/or folder: /etc/crouton/shares
+
+NOTES:
+    https://www.atlassian.com/pt/git/tutorial/git-basics#!config
+    git config --global user.name "YOUR NAME"
+    git config --global user.email "email"
+    git config --global core.editor vim  
+    git config --global user.name "Chris Hammond"
+    git config --global user.email "chris.hammond.tx@gmail.com"
+    git config --global credential.helper 'cache --timeout=3600'
+    git config --global core.editor vim
+    git status
+    git config --global push.default simple
+    ssh-keygen -t rsa -C "chris.hammond.tx@gmail.com"
+    git add .
+    ---
+    http://digital-madness.in/blog/2013/github-for-beginners-debianubuntulinux/
+    cd /path/to/project/
+    touch README.md
+    git init
+    git add *
+    git commit -m "commit message"
+    git status
+
+FURTHER RESEARCH:
+1. do sudo rootdev to find your root device name (e.g. /dev/mmcblk0) 
+
+2. Use cgpt show or fdisk -l to see the partition number where ubuntu got installed (e.g. mine was 7)
+
+3. Create an alias like 
+alias ubuntu='sudo cgpt add -i 7 -P 0 -S 1 /dev/mmcblk0;sudo reboot'
+
+Bay Trail CPU
+
+REF:
+https://github.com/dnschneid/crouton
+http://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/toshiba-cb30-chromebook
+https://github.com/dnschneid/crouton/wiki
+http://askubuntu.com/questions/558351/ubuntu-on-developer-mode-of-toshiba-cb35-b3340-chromebook-2
+https://plus.google.com/communities/105678482604512626671/stream/d4fb2ba2-d073-4df2-a09c-4f1b7a49c125
+https://github.com/dnschneid/crouton/issues
+https://github.com/dnschneid/crouton/tree/master/targets
+https://github.com/dnschneid/crouton/tree/master/installer
+https://github.com/dnschneid/crouton/wiki/Crouton-Command-Cheat-Sheet
+
+http://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/acer-c720-chromebook
+
+crouton install examples
+http://www.gaggl.com/2015/03/install-ubuntu-14-04-on-a-chromebook/
+
+crunchbook / conky
+http://crunchbang.org/forums/viewtopic.php?id=27917
+
+Bootstrap Chromebrew to start Linuxbrew
+https://github.com/Homebrew/linuxbrew/wiki/Chromebook-Install-Instructions 
+
+Dual-Booting your Chromebook
+https://sites.google.com/site/chromeoswikisite/home/what-s-new-in-dev-and-beta/developer-mode
+
+https://www.justinribeiro.com/chronicle/2014/03/31/my-chromebook-and-i-my-development-environment/
+https://medium.com/@samx18/setup-a-complete-local-development-environment-on-your-arm-chromebook-b7fb9c14ec97
+
